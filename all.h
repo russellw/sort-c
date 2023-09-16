@@ -9,9 +9,7 @@
 #include <string.h>
 
 #include <exception>
-#include <filesystem>
 #include <fstream>
-#include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <ostream>
@@ -60,13 +58,6 @@ string at(int i) {
 	if (i < V.size())
 		return V[i];
 	return "}";
-}
-
-bool endsWith(string s, const char* t) {
-	auto n = strlen(t);
-	if (s.size() < n)
-		return 0;
-	return memcmp(s.data() + s.size() - n, t, n) == 0;
 }
 
 int indent(int i) {
