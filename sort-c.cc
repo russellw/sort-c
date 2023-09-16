@@ -2,77 +2,30 @@
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <algorithm>
-using std::max;
-using std::min;
-using std::remove_if;
-using std::swap;
-
-#include <array>
-using std::array;
-
 #include <exception>
-using std::exception;
-
 #include <filesystem>
-using std::filesystem::path;
-
 #include <fstream>
-using std::ifstream;
-using std::ofstream;
-
 #include <iomanip>
-using std::setw;
-
 #include <iostream>
-using std::cout;
-
 #include <iterator>
-using std::istreambuf_iterator;
-
 #include <ostream>
-using std::ostream;
-
-#include <set>
-using std::set;
-
+#include <regex>
 #include <stdexcept>
-using std::runtime_error;
-
 #include <string>
-using std::string;
-using std::to_string;
-
-#include <unordered_map>
-using std::unordered_map;
-
-#include <unordered_set>
-using std::unordered_set;
-
 #include <vector>
-using std::vector;
+using namespace std;
 
 #ifdef NDEBUG
 #define debug(a)
 #else
 #define debug(a) cout << __FILE__ << ':' << __LINE__ << ": " << __func__ << ": " << #a << ": " << a << '\n'
 #endif
-
-// a lot of output syntax uses comma separators
-struct Separator {
-	bool subsequent = 0;
-
-	bool operator()() {
-		auto a = subsequent;
-		subsequent = 1;
-		return a;
-	}
-};
 
 // input
 string file;
@@ -102,52 +55,12 @@ void readLines() {
 	}
 }
 
-void pread(string cmd) {
-	auto f = _popen(cmd.data(), "r");
-	if (!f)
-		throw runtime_error(cmd + ": " + strerror(errno));
-	text.clear();
-	for (;;) {
-		auto c = fgetc(f);
-		if (c < 0) {
-			auto r = _pclose(f);
-			if (r)
-				throw runtime_error(cmd + ": " + to_string(r));
-			return;
-		}
-		text += c;
-	}
-}
-
 // SORT
 bool endsWith(string s, const char* t) {
 	auto n = strlen(t);
 	if (s.size() < n)
 		return 0;
 	return memcmp(s.data() + s.size() - n, t, n) == 0;
-}
-
-inline bool eq(const char* s, const char* t) {
-	for (auto i = strlen(t); i--;)
-		if (*s++ != *t++)
-			return 0;
-	return 1;
-}
-
-string esc(string s) {
-	string o = "\"";
-	for (auto c: s) {
-		if (isprint((unsigned char)c)) {
-			if (c == '"')
-				o += '\\';
-			o += c;
-			continue;
-		}
-		char buf[7];
-		sprintf(buf, "\\x%02x\"\"", (unsigned char)c);
-		o += buf;
-	}
-	return o + '"';
 }
 
 int indent(int i) {
