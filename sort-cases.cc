@@ -59,6 +59,31 @@ struct Block {
 
 int main(int argc, char** argv) {
 	try {
+		bool inplace = 0;
+		vector<string> files;
+		for (int i = 1; i < argc; ++i) {
+			auto s = argv[i];
+			if (*s == '-') {
+				while (*s == '-')
+					++s;
+				switch (*s) {
+				case 'V':
+				case 'v':
+					cout << "sort-cases version 1\n";
+					return 0;
+				case 'h':
+					cout << "-h  Show help\n";
+					cout << "-V  Show version\n";
+					cout << "-i  Edit files in place\n";
+					return 0;
+				case 'i':
+					inplace = 1;
+					continue;
+				}
+				throw runtime_error(string(argv[i]) + ": unknown option");
+			}
+			files.push_back(s);
+		}
 		for (int i = 1; i < argc; ++i) {
 			file = argv[i];
 			readLines();
