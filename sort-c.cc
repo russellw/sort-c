@@ -75,8 +75,9 @@ int main(int argc, char** argv) {
 			}
 			files.push_back(s);
 		}
-		for (int i = 1; i < argc; ++i) {
-			file = argv[i];
+
+		for (auto& file0: files) {
+			file = file0;
 			readLines();
 			auto old = V;
 			for (int i = 0; i < V.size();) {
@@ -100,7 +101,7 @@ int main(int argc, char** argv) {
 					// end of group?
 					if (indent(j) < dent)
 						break;
-					auto s = V[j];
+					auto& s = V[j];
 					if (regex_match(s, commentRegex))
 						break;
 					if (startsWith(s, "} // namespace"))
@@ -117,7 +118,7 @@ int main(int argc, char** argv) {
 
 				// if blocks are functions, separate with blank lines
 				bool blanks = 0;
-				for (auto block: blocks)
+				for (auto& block: blocks)
 					if (regex_search(V[block.first], fnRegex)) {
 						blanks = 1;
 						break;
@@ -125,7 +126,7 @@ int main(int argc, char** argv) {
 
 				// update
 				vector<string> o;
-				for (auto block: blocks) {
+				for (auto& block: blocks) {
 					if (blanks && o.size())
 						o.push_back("");
 					block.to(o);
@@ -137,12 +138,17 @@ int main(int argc, char** argv) {
 
 				i += o.size();
 			}
-			if (old != V)
-				writeLines();
+			if (inplace) {
+				if (old != V)
+					writeLines();
+				continue;
+			}
+			for (auto& s: V)
+				cout << s << '\n';
 		}
 		return 0;
 	} catch (exception& e) {
-		cout << e.what() << '\n';
+		cerr << e.what() << '\n';
 		return 1;
 	}
 }

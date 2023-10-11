@@ -84,8 +84,9 @@ int main(int argc, char** argv) {
 			}
 			files.push_back(s);
 		}
-		for (int i = 1; i < argc; ++i) {
-			file = argv[i];
+
+		for (auto& file0: files) {
+			file = file0;
 			readLines();
 			auto old = V;
 
@@ -156,7 +157,7 @@ int main(int argc, char** argv) {
 
 				// update
 				vector<string> o;
-				for (auto block: blocks)
+				for (auto& block: blocks)
 					block.to(o);
 				V.erase(V.begin() + i, V.begin() + j);
 				V.insert(V.begin() + i, o.begin(), o.end());
@@ -164,12 +165,17 @@ int main(int argc, char** argv) {
 				i += o.size();
 			}
 
-			if (old != V)
-				writeLines();
+			if (inplace) {
+				if (old != V)
+					writeLines();
+				continue;
+			}
+			for (auto& s: V)
+				cout << s << '\n';
 		}
 		return 0;
 	} catch (exception& e) {
-		cout << e.what() << '\n';
+		cerr << e.what() << '\n';
 		return 1;
 	}
 }

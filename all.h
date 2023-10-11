@@ -82,7 +82,7 @@ int indent(int i) {
 	return j;
 }
 
-bool startsWith(string s, const char* t) {
+bool startsWith(const string& s, const char* t) {
 	auto n = strlen(t);
 	if (s.size() < n)
 		return 0;
@@ -92,6 +92,6 @@ bool startsWith(string s, const char* t) {
 // output
 void writeLines() {
 	ofstream os(file, std::ios::binary);
-	for (auto s: V)
+	for (auto& s: V)
 		os << s << '\n';
 }
