@@ -5,6 +5,7 @@ regex assignRegex(R"((\w+) = )");
 regex callRegex(R"((\w+)\()");
 regex commentRegex(R"(\s*//.*)");
 regex fnRegex(R"((\w+)\(.*\{$)");
+regex ifRegex(R"(\s*if \(.*)");
 regex lbraceRegex(R"(.*\{$)");
 regex rbraceRegex(R"(\s*\};?)");
 regex sortCommentRegex(R"(\s*// SORT)");
@@ -119,7 +120,7 @@ int main(int argc, char** argv) {
 				// if blocks are functions, separate with blank lines
 				bool blanks = 0;
 				for (auto& block: blocks)
-					if (regex_search(V[block.first], fnRegex)) {
+					if (!regex_match(V[block.first], ifRegex) && regex_search(V[block.first], fnRegex)) {
 						blanks = 1;
 						break;
 					}
